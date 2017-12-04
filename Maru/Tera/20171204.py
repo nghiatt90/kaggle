@@ -1,14 +1,13 @@
-
 # coding: utf-8
 
 # In[11]:
 
 
-import re
-import pandas as pd
 import datetime
-import numpy as np
 import matplotlib.pyplot as plt
+import glob
+import pandas as pd
+import re
 
 
 # In[12]:
@@ -120,19 +119,6 @@ def process_file2(input_file):
     return new_df2
 
 
-# def plot_columns(df, columns, ax=None):
-#     for col in columns:
-#         x = get_df(col, df)
-#         if x[col].isnull().all():
-#             continue
-#         if ax is None:
-#             ax = x.plot()
-#             ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
-#
-#         else:
-#             x.plot(ax=ax)
-#             ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
-
 def plot_columns(df, col_style_dict, ax=None):
     for col, style in col_style_dict.iteritems():
         x = get_df(col, df)
@@ -147,12 +133,7 @@ def plot_columns(df, col_style_dict, ax=None):
 
 total_df = pd.DataFrame()
 total_df2 = pd.DataFrame()
-for f in ('main_20171102.log', 'main_20171103.log', 'main_20171104.log', 'main_20171105.log',
-          'main_20171106.log', 'main_20171107.log', 'main_20171108.log', 'main_20171109.log',
-          'main_20171110.log', 'main_20171111.log', 'main_20171112.log', 'main_20171113.log',
-          'main_20171114.log', 'main_20171115.log', 'main_20171116.log', 'main_20171117.log',
-          'main_20171118.log', 'main_20171119.log', 'main_20171120.log', 'main_20171121.log',
-          'main_20171122.log'):
+for f in glob.glob('log/*.log'):
         total_df = total_df.append(process_file(f))
         total_df2 = total_df2.append(process_file2(f))
 
@@ -183,9 +164,9 @@ plot_columns(total_df,
 plot_columns(total_df, {'Cleaning time.': 'o-'})
 plot_columns(total_df, {'Weight peak/Reset': 'o-'})
 plot_columns(total_df, {'Weight peak/Compaction': 'o-'})
+ax = None
 for x in labels[1:21]:
-    plot_columns(total_df2, {x: 'o-'}, plot_columns(total_df2, {x: None}))
+    ax = plot_columns(total_df2, {x: 'o-'}, ax=ax)
 plot_columns(total_df2, {'WT': 'o-'})
 
 plt.show()
-
